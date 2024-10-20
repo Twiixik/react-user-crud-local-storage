@@ -5,15 +5,14 @@ export default function CreatePage() {
   const navigate = useNavigate();
 
   async function createUser(newUser) {
-    newUser.id = Date.now().toString(); // add the current date as id
+    const response = await fetch("https://react-user-crud-app-default-rtdb.firebaseio.com/users.json", {
+      method: "POST",
+      body: JSON.stringify(newUser)
+    });
 
-    const data = localStorage.getItem("users"); // get data from local storage
-    const usersData = JSON.parse(data) || []; // parse the data from string to javascript array
-
-    usersData.push(newUser); // add the new user to the array
-    localStorage.setItem("users", JSON.stringify(usersData)); // save the users array to local storage
-
-    navigate("/"); // navigate to the home page
+    if (response.ok) {
+      navigate("/"); // navigate to the home page
+    }
   }
 
   function handleCancel() {

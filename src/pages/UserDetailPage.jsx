@@ -8,10 +8,13 @@ export default function UserDetailPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const data = localStorage.getItem("users"); // get data from local storage
-    const usersData = JSON.parse(data) || []; // parse the data from string to javascript array
-    const user = usersData.find(user => user.id === id); // find the user with the id from the params
-    setUser(user); // set the user state with the data from local storage
+    getUser(); // call the getUser function
+
+    async function getUser() {
+      const response = await fetch(`https://react-user-crud-app-default-rtdb.firebaseio.com/users/${id}.json`);
+      const data = await response.json();
+      setUser(data); // set the user state with the data from local storage
+    }
   }, [id]); // <--- "[id]" VERY IMPORTANT!!!
 
   function showDeleteDialog() {
@@ -22,11 +25,12 @@ export default function UserDetailPage() {
   }
 
   async function deleteUser() {
-    const data = localStorage.getItem("users"); // get data from local storage
-    const usersData = JSON.parse(data) || []; // parse the data from string to javascript array
-    const updatedUsers = usersData.filter(user => user.id !== id); // filter out the user with the id from the params
-    localStorage.setItem("users", JSON.stringify(updatedUsers)); // save the users state to local storage
-    navigate("/"); // navigate to the home page
+    const response = await fetch(`https://react-user-crud-app-default-rtdb.firebaseio.com/users/${id}.json`, {
+      method: "DELETE"
+    });
+    if (response.ok) {
+      navigate("/"); // navigate to the home page
+    }
   }
 
   function showUpdate() {
