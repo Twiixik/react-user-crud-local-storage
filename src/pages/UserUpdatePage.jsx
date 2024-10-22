@@ -17,17 +17,15 @@ useEffect(() => {
     }
   }, [id]); // <--- "[id]" VERY IMPORTANT!!!
 
+
   async function updateUser(userToUpdate) {
-    const data = localStorage.getItem("users");
-    const usersData = JSON.parse(data) || [];
-    // map through the users
-    const updatedUsers = usersData.map(user => {
-      // if the user id is the same as the id from the params
-      if (user.id === id) {
-        return { ...user, ...userToUpdate }; // return the user with the updated data
-      }
-      return user; // return the user without updating
-    });
+       const response = await fetch(`https://timotejsproject-default-rtdb.europe-west1.firebasedatabase.app/users/${id}.json`,
+         {
+        method:"PUT",
+        body: JSON.stringify(userToUpdate)
+      } 
+       ); 
+     
     
 
     localStorage.setItem("users", JSON.stringify(updatedUsers)); // save the users state to local storage
