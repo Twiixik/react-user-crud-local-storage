@@ -7,11 +7,15 @@ export default function UpdatePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
 
-  useEffect(() => {
-    const data = localStorage.getItem("users");
-    const usersData = JSON.parse(data) || [];
-    setUser(usersData.find(user => user.id === id));
-  }, [id]); // <--- "[params.id]" VERY IMPORTANT!!!
+useEffect(() => {
+  getUser();
+
+    async function getUser() {
+    const response = await fetch(`https://timotejsproject-default-rtdb.europe-west1.firebasedatabase.app/users/${id}.json`);
+    const data = await response.json();
+    setUser(data); // set the user state with the data from local storage
+    }
+  }, [id]); // <--- "[id]" VERY IMPORTANT!!!
 
   async function updateUser(userToUpdate) {
     const data = localStorage.getItem("users");
@@ -24,6 +28,7 @@ export default function UpdatePage() {
       }
       return user; // return the user without updating
     });
+    
 
     localStorage.setItem("users", JSON.stringify(updatedUsers)); // save the users state to local storage
     navigate(`/users/${id}`); // navigate to the user detail page
